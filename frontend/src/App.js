@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Sun, Moon } from 'lucide-react';
+import React, { useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
 
 function App() {
   const [image, setImage] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [darkMode]);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -37,7 +33,6 @@ function App() {
     } catch (error) {
       alert(error.message);
     }
-
     setLoading(false);
   };
 
@@ -51,53 +46,69 @@ function App() {
     document.body.removeChild(link);
   };
 
+  const toggleTheme = () => {
+    setDarkMode((prev) => !prev);
+  };
+
   return (
-    <div className="min-h-screen px-4 py-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
-      <div className="max-w-2xl mx-auto">
-        {/* Header with toggle */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-center w-full">Auto Background Remover</h1>
-          <button
-            className="absolute right-6"
-            onClick={() => setDarkMode(!darkMode)}
-            aria-label="Toggle Dark Mode"
-          >
+    <div
+      style={{
+        backgroundColor: darkMode ? '#121212' : '#f5f5f5',
+        color: darkMode ? '#f5f5f5' : '#121212',
+        minHeight: '100vh',
+        padding: '40px 20px',
+        fontFamily: 'Arial, sans-serif',
+        transition: 'all 0.3s ease',
+      }}
+    >
+      <div style={{ maxWidth: '600px', margin: 'auto', textAlign: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1>Auto Background Remover</h1>
+          <button onClick={toggleTheme} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
             {darkMode ? <Sun size={24} /> : <Moon size={24} />}
           </button>
         </div>
 
-        {/* File input area */}
-        <div className="border-2 border-dashed rounded-lg p-6 text-center dark:border-gray-600">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="mb-2"
-          />
-          <p className="text-sm">Upload or drag & drop an image</p>
+        <div style={{ border: '2px dashed #ccc', padding: '30px', marginTop: '20px', borderRadius: '10px' }}>
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <p style={{ margin: '10px 0 0' }}>Upload or drag & drop an image</p>
         </div>
 
-        <div className="text-center mt-4">
-          <button
-            onClick={handleUpload}
-            disabled={!image || loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? 'Processing...' : 'Remove Background'}
-          </button>
-        </div>
+        <br />
+        <button
+          onClick={handleUpload}
+          disabled={!image || loading}
+          style={{
+            backgroundColor: '#007bff',
+            color: '#fff',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          {loading ? 'Processing...' : 'Remove Background'}
+        </button>
 
         {result && (
-          <div className="mt-8 text-center">
-            <h2 className="text-xl font-semibold mb-4">Result</h2>
+          <div style={{ marginTop: '30px' }}>
+            <h2>Result</h2>
             <img
               src={result}
               alt="Background Removed"
-              className="max-w-full mx-auto border rounded-lg"
+              style={{ maxWidth: '100%', height: 'auto', border: '1px solid #ccc', borderRadius: '10px' }}
             />
+            <br /><br />
             <button
               onClick={handleDownload}
-              className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              style={{
+                backgroundColor: '#28a745',
+                color: '#fff',
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
             >
               Download Image (PNG)
             </button>
